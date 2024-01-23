@@ -6,6 +6,7 @@ import org.example.springbootdeveloper.domain.Article;
 import org.example.springbootdeveloper.dto.AddArticleRequest;
 import org.example.springbootdeveloper.dto.UpdateArticleRequest;
 import org.example.springbootdeveloper.repository.BlogRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +16,9 @@ import java.util.List;
 public class BlogService {
     private final BlogRepository blogRepository;
 
-    public Article save(AddArticleRequest request){
-        return blogRepository.save(request.toEntity());
+    public Article save(AddArticleRequest request, String userName){
+
+        return blogRepository.save(request.toEntity(userName));
     }
     public List<Article> findAll(){
         return blogRepository.findAll();
@@ -26,15 +28,29 @@ public class BlogService {
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
     }
     public void delete(long id) {
-        blogRepository.deleteById(id);
+        Article article = blogRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("not found : " + id));
+
+        authorizeArticleAuthor(article);
+        blogRepository.delete(article);
     }
 
     @Transactional
     public Article update(long id, UpdateArticleRequest request){
         Article article = blogRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+
+        authorizeArticleAuthor(article); // 예외 발생시 이하 작업 실행되지 않음.
         article.update(request.getTitle(), request.getContent());
         return article;
+    }
+
+    // 게시글을 작성한 유저인지 확인
+    private static void authorizeArticleAuthor(Article article) {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!article.getAuthor().equals(userName)){
+            throw new IllegalArgumentException("not authorized");
+        }
     }
 
 }
