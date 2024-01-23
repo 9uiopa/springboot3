@@ -1,10 +1,7 @@
 package org.example.springbootdeveloper.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@ToString
 public class User implements UserDetails {
 
     @Id
@@ -29,10 +27,19 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "nickname", unique = true)
+    private String nickname;
+
     @Builder
-    public User(String email, String password, String auth){
+    public User(String email, String password, String nickname){
         this.email = email;
         this.password = password;
+        this.nickname = nickname;
+    }
+
+    public User update(String nickname){
+        this.nickname = nickname;
+        return this;
     }
 
     // 사용자가 가지고 있는 권한의 목록을 반환.
@@ -70,4 +77,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

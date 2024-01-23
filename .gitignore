@@ -43,3 +43,4 @@ bin/
 
 ###cloud.google ###
 console-info.md
+application-oauth2secret.yml

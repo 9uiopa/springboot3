@@ -1,4 +1,7 @@
 spring:
+  config:
+    # yml 파일 분리
+    import: classpath:application-oauth2secret.yml
   jpa:
     # 전송 쿼리 확인
     show-sql: true
