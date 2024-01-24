@@ -1,0 +1,28 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            # test 통과용 더미값
+            client-id: id
+            client-secret: secret
+  jpa:
+    # 전송 쿼리 확인
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+    # 테이블 생성 후에 data.sql 실행
+    defer-datasource-initialization: true
+
+  h2:
+    console:
+      enabled: true
+
+jwt: # JwtProperties에서 사용
+  # test 통과용 더미값
+  issuer: issuer
+  secret_key: secret
+
