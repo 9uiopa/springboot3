@@ -2,6 +2,7 @@ package org.example.springbootdeveloper.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.springbootdeveloper.config.error.exception.ArticleNotFoundException;
 import org.example.springbootdeveloper.domain.Article;
 import org.example.springbootdeveloper.dto.AddArticleRequest;
 import org.example.springbootdeveloper.dto.UpdateArticleRequest;
@@ -17,7 +18,6 @@ public class BlogService {
     private final BlogRepository blogRepository;
 
     public Article save(AddArticleRequest request, String userName){
-
         return blogRepository.save(request.toEntity(userName));
     }
     public List<Article> findAll(){
@@ -25,7 +25,7 @@ public class BlogService {
     }
     public Article findById(long id){
         return blogRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+                .orElseThrow(ArticleNotFoundException::new);
     }
     public void delete(long id) {
         Article article = blogRepository.findById(id)
