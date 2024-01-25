@@ -234,13 +234,14 @@ class BlogApiControllerTest {
         final String url = "/api/articles/{id}";
 
         // when
-        final ResultActions resultActions = mockMvc.perform(post(url, 1));
+        final ResultActions resultActions = mockMvc.perform(post(url, 1)
+                .contentType(MediaType.APPLICATION_JSON)); // POST 타입의 해당 url은 GetMapping이 없다
 
         // then
         resultActions
                 .andDo(print())
-                .andExpect(status().isMethodNotAllowed());
-                //.andExpect(jsonPath("$.message").value(ErrorCode.METHOD_NOT_ALLOWED.getMessage()));
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$.message").value(ErrorCode.METHOD_NOT_ALLOWED.getMessage()));
     }
     /*
     @DisplayName("findArticle: 존재하지 않는 아티클을 조회하려고 하면 조회에 실패한다.")

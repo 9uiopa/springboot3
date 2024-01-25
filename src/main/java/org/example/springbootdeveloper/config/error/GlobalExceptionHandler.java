@@ -2,6 +2,7 @@ package org.example.springbootdeveloper.config.error;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.springbootdeveloper.config.error.exception.BusinessBaseException;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -30,9 +31,13 @@ public class GlobalExceptionHandler {
         return createErrorResponseEntity(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
+//    private ResponseEntity<ErrorResponse> createErrorResponseEntity(ErrorCode errorCode) {
+//        return ResponseEntity.status(errorCode.getStatus()).contentType(MediaType.APPLICATION_JSON).body(ErrorResponse.of(errorCode));
+//    }
+
     private ResponseEntity<ErrorResponse> createErrorResponseEntity(ErrorCode errorCode) {
         return new ResponseEntity<>(
-                ErrorResponse.of(errorCode),
-                errorCode.getStatus());
+                ErrorResponse.of(errorCode), // ErrorResponse 객체
+                errorCode.getStatus()); // BAD_REQUEST 등
     }
 }
