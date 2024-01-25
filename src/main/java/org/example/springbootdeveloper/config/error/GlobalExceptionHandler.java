@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     // 지원하지 않은 HTTP method 호출 할 경우 발생
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class) // HttpRequestMethodNotSupportedException 예외를 잡아서 처리
     protected ResponseEntity<ErrorResponse> handle(HttpRequestMethodNotSupportedException e) {
-        log.error("HttpRequestMethodNotSupportedException", e);
+        log.error("log , HttpRequestMethodNotSupportedException", e);
         return createErrorResponseEntity(ErrorCode.METHOD_NOT_ALLOWED);
     }
 
