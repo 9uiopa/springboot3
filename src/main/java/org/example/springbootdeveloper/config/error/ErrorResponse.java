@@ -1,5 +1,12 @@
 package org.example.springbootdeveloper.config.error;
 
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor(access= AccessLevel.PROTECTED)
 // ErrorAttributes 대체용 , 에러 메시지의 객체다.
 public class ErrorResponse {
     private String message;

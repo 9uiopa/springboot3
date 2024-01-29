@@ -2,26 +2,34 @@ package org.example.springbootdeveloper.config.error;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.springbootdeveloper.config.error.exception.BusinessBaseException;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Slf4j
-@ControllerAdvice // 모든 컨트롤러에서 발생하는 예외를 잡아서 처리함을 의미.
+@ControllerAdvice // 모든 컨트롤러에서 발생하는 예외를 잡아서 처리
 public class GlobalExceptionHandler {
+
     // 지원하지 않은 HTTP method 호출 할 경우 발생
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class) // HttpRequestMethodNotSupportedException 예외를 잡아서 처리
     protected ResponseEntity<ErrorResponse> handle(HttpRequestMethodNotSupportedException e) {
-        log.error("log , HttpRequestMethodNotSupportedException", e);
+        log.error("HttpRequestMethodNotSupportedException", e);
         return createErrorResponseEntity(ErrorCode.METHOD_NOT_ALLOWED);
     }
 
-    @ExceptionHandler(BusinessBaseException.class) // (해당 예외) 처리
+    @ExceptionHandler(BusinessBaseException.class)
     protected ResponseEntity<ErrorResponse> handle(BusinessBaseException e) {
         log.error("BusinessException", e);
         return createErrorResponseEntity(e.getErrorCode());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ResponseEntity<ErrorResponse> handle(MethodArgumentNotValidException e){
+        log.error("MethodArgumentNotValidException : ", e);
+        return createErrorResponseEntity(ErrorCode.INVALID_INPUT_VALUE);
     }
 
     @ExceptionHandler(Exception.class)
@@ -31,13 +39,9 @@ public class GlobalExceptionHandler {
         return createErrorResponseEntity(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
-//    private ResponseEntity<ErrorResponse> createErrorResponseEntity(ErrorCode errorCode) {
-//        return ResponseEntity.status(errorCode.getStatus()).contentType(MediaType.APPLICATION_JSON).body(ErrorResponse.of(errorCode));
-//    }
-
     private ResponseEntity<ErrorResponse> createErrorResponseEntity(ErrorCode errorCode) {
         return new ResponseEntity<>(
-                ErrorResponse.of(errorCode), // ErrorResponse 객체
-                errorCode.getStatus()); // BAD_REQUEST 등
+                ErrorResponse.of(errorCode),
+                errorCode.getStatus());
     }
 }
